@@ -1,0 +1,16 @@
+streamlit  (downloaded)
+openai-whisper (downloaded)
+transformers
+sentence-transformers
+torch
+faiss-cpu
+opencv-python
+moviepy
+yt-dlp (downloaded)
+Pillow
+scikit-learn
+rank-bm25
+pgvector
+psycopg2-binary
+sqlalchemy
+ffmpeg-python (downloaded)
