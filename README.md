@@ -67,7 +67,7 @@ Speech-to-Text: Use Whisper.
 
 Text Embeddings: Open-source MTEB model.
 
-Image Embeddings: OpenAI CLIP or similar.
+Image Embeddings: OpenAI CLIP.
 
 Retrieval: FAISS + PostgreSQL+pgvector (IVFFLAT + HNSW) + TF-IDF + BM25.
 
@@ -98,7 +98,7 @@ Step 5: Retrieval system:
 
     - Lexical search (TF-IDF and BM25).
 
-    - ptional: Combine text and image retrieval.
+    - optional: Combine text and image retrieval.
 
 Step 6: Streamlit App:
 
@@ -108,25 +108,3 @@ Step 6: Streamlit App:
 
     - If no good answer, show "No answer found."
 
-
-    App Design: 
-    --------------------------------------------------------
-|  📹 Video Player [selected frame/video segment]       |
-|                                                      |
-|  ✍️  Text Input (User Question)                       |
-|                                                      |
-|  🔍 Retrieval Mode:  [Semantic | Lexical]  (Dropdown) |
-|  📑 Top-k Results:   [1-10] (Slider)                  |
-|                                                      |
-|  💬 Answers (Text + Frame Snapshots)                 |
-|                                                      |
---------------------------------------------------------
-Core flow:
-
-    User types a question.
-
-    Chooses semantic or lexical retrieval.
-
-    App shows best matching text chunks and frames.
-
-    Clickable thumbnails to jump to video points.

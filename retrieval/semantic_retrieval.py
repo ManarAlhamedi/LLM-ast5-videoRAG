@@ -1,8 +1,7 @@
 import faiss
 import numpy as np
 import pickle
-import psycopg2
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, select, desc
 from pgvector.sqlalchemy import Vector
 from sqlalchemy import Column, Integer, String, MetaData, Table, select
 from tqdm import tqdm
@@ -79,16 +78,22 @@ class PgvectorRetriever:
                     embedding=embed.tolist()
                 ))
 
+
+
     def search(self, query_embedding, top_k=5, method="ivfflat"):
         with self.engine.connect() as conn:
             if method.lower() == "ivfflat":
-                stmt = select(self.table).order_by(self.table.c.embedding.l2_distance(query_embedding)).limit(top_k)
+                distance_expr = self.table.c.embedding.l2_distance(query_embedding).label("score")
+                stmt = select(self.table.c.text, distance_expr).order_by(distance_expr).limit(top_k)
             elif method.lower() == "hnsw":
-                stmt = select(self.table).order_by(self.table.c.embedding.max_inner_product(query_embedding)).limit(top_k)
+                # Negative of max_inner_product to return high similarity (DESC order)
+                similarity_expr = (self.table.c.embedding.max_inner_product(query_embedding) * -1).label("score")
+                stmt = select(self.table.c.text, similarity_expr).order_by(desc("score")).limit(top_k)
             else:
                 raise ValueError("Unknown method: choose 'ivfflat' or 'hnsw'.")
 
             results = conn.execute(stmt).fetchall()
 
-        return [(row['text'], None) for row in results]  # no distances returned
+        return [(row['text'], row['score']) for row in results]
+
 
