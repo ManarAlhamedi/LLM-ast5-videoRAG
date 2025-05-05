@@ -14,7 +14,7 @@ import json
 # ---------------------
 VIDEO_PATH = "data/video.mp4"
 MAPPING_PATH = "data/mappings/frame_text_mapping.json"
-RETRIEVER_OPTIONS = ["bm25", "tfidf", "faiss", "pgvector", "multimodal"]
+RETRIEVER_OPTIONS = ["bm25", "tfidf", "faiss", "pgvector_ivfflat", "pgvector_hnsw", "multimodal"]
 
 # ---------------------
 # LOAD FRAME-TEXT MAPPING
@@ -46,8 +46,9 @@ st.title("🎥 Chat with the Video")
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
-# Select retriever
-retriever_type = st.selectbox("Choose Retrieval Method:", RETRIEVER_OPTIONS)
+with st.sidebar:
+    st.header("⚙️ Settings")
+    retriever_type = st.selectbox("Choose Retrieval Method:", RETRIEVER_OPTIONS)
 
 # Input box for user question
 query = st.chat_input("Ask a question about the video...")
@@ -56,7 +57,7 @@ query = st.chat_input("Ask a question about the video...")
 retriever = UnifiedRetriever(
     use_faiss="faiss" in retriever_type,
     use_pgvector="pgvector" in retriever_type,
-    pg_method="ivfflat",  # or "hnsw"
+    pg_method="ivfflat" if "ivfflat" in retriever_type else ("hnsw" if "hnsw" in retriever_type else None),
     use_multimodal="multimodal" in retriever_type
 )
 

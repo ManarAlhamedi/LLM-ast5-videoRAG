@@ -30,6 +30,9 @@ class UnifiedRetriever:
 
         if use_pgvector:
             self.pg = PgvectorRetriever()
+            if not self.pg.is_populated(): 
+                self.pg.populate()
+                self.pg.create_indices()
 
         if use_multimodal:
             self.load_image_data()
@@ -54,15 +57,30 @@ class UnifiedRetriever:
 
         elif retriever_type == "bm25":
             self.bm25.fit()
-            return self.bm25.search(query, top_k)[0]
+            return self.bm25.search(query, top_k)
 
         elif retriever_type == "faiss":
             query_embed = self.text_encoder.encode([query], normalize_embeddings=True).astype("float32")
             return self.faiss.search(query_embed, top_k)
 
-        elif retriever_type == "pgvector":
-            query_embed = self.text_encoder.encode([query], normalize_embeddings=True).tolist()
-            return self.pg.search(query_embed[0], top_k, method=self.pg_method)
+        elif retriever_type == "pgvector_ivfflat":
+            query_embed = self.text_encoder \
+                              .encode([query], normalize_embeddings=True) \
+                              .tolist()[0]
+            print(f"[DEBUG] Query embedding (first 5 values): {query_embed[:5]}")
+            results = self.pg.search(query_embed, top_k, method="ivfflat") 
+            print(f"[DEBUG] Retrieved {len(results)} pgvector results.")
+
+            return results
+
+        elif retriever_type == "pgvector_hnsw":
+            query_embed = self.text_encoder \
+                              .encode([query], normalize_embeddings=True) \
+                              .tolist()[0]
+            print(f"[DEBUG] Query embedding (first 5 values): {query_embed[:5]}")
+            results = self.pg.search(query_embed, top_k, method="hnsw")  
+            print(f"[DEBUG] Retrieved {len(results)} pgvector results.")
+            return results
 
         elif retriever_type == "multimodal":
             return self.search_multimodal(query, top_k)
@@ -70,6 +88,8 @@ class UnifiedRetriever:
         else:
             raise ValueError("Unsupported retriever type")
 
+
+# concatenation is used for fusion
     def search_multimodal(self, query, top_k=5):
         # Encode query using CLIP
         inputs = self.clip_processor(text=[query], return_tensors="pt", padding=True)

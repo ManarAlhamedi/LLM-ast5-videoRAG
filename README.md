@@ -108,3 +108,14 @@ Step 6: Streamlit App:
 
     - If no good answer, show "No answer found."
 
+
+
+# For postgres connection:
+On Command Prompt (Windows):
+If you have psql installed, run this in your system terminal:
+    psql -d <database_name> -U <username> -p <port_number>
+To enable the vector extension for pgvector retrieval method, run this inside your psql session:
+    CREATE EXTENSION vector;
+    SELECT * FROM pg_extension WHERE extname = 'vector';
+
+
