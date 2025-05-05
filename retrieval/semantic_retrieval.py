@@ -6,6 +6,11 @@ from sqlalchemy import create_engine
 from pgvector.sqlalchemy import Vector
 from sqlalchemy import Column, Integer, String, MetaData, Table, select
 from tqdm import tqdm
+from dotenv import load_dotenv
+import os
+
+# Load environment variables from .env file
+load_dotenv()
 
 # ------------------------
 # CONFIG
@@ -14,8 +19,8 @@ TEXT_EMBEDDINGS_PATH = "embeddings/text/text_embeddings.pkl"
 IMAGE_EMBEDDINGS_PATH = "embeddings/images/image_embeddings.pkl"
 
 # PostgreSQL Database URL
-# Example: "postgresql://username:password@localhost:5432/rag_db"
-DATABASE_URL = "postgresql://postgres:password@localhost:5432/rag_db"
+# DATABASE_URL = "postgresql://postgres:password@localhost:5432/rag_db"
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 # ------------------------
 # FAISS Retriever

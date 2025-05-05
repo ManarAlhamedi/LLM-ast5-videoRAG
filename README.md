@@ -1,5 +1,9 @@
 # LLM-ast5-videoRAG
-This is a repo containing all the deliverables for assignment 5 of CMPS396A: LLM and RAGs course. It implements a system to answer user questions about a certain video.
+This is a repository containing all the deliverables for assignment 5 of CMPS396A: LLM and RAGs course. It implemnets a multimodal RAG system around a video, combining speech-to-text transcription, keyframe extraction, text and image embeddings, semantic + lexical search, and then wrap it all inside a Streamlit chat-like interface that either plays relevant video segments or says no answer found.
+
+# Rnnning the App
+To run the app, open the terminal from the root directory, 
+and write the command: "streamlit run interface/app.py"
 
 # Tech Stack:
 Programming Language: Python
@@ -18,16 +22,19 @@ Frameworks/Libraries:
 
 - Scikit-learn or Rank-BM25 (TF-IDF, BM25)
 
-- moviepy, opencv or ffmpeg-python (for frame extraction)
+- ffmpeg-python (for frame extraction)
 
 - yt_dlp (download YouTube video)
 
 - psycopg2, SQLAlchemy (PostgreSQL with pgvector)
 
+- PostgreSQL: https://www.postgresql.org/download/windows/
+
+- pgvector extension for PostgreSQL https://github.com/pgvector/pgvector/
 
 # Directory Structure:
 RAG-Video-QA/
-├── app/                  # Streamlit app
+├── interface/                  # Streamlit app
 ├── data/                 # Video, Chunks, Frames and Mappings of Text to Frames
 ├── embeddings/           # Text & image embeddings
 ├── retrieval/            # Semantic and lexical search
@@ -73,3 +80,53 @@ Evaluation: Accuracy, rejection quality, latency, graphs/tables.
 Video Demo: Clear 10-min walkthrough.
 
 (Optional Bonus): Score fusion, fine-tuning, explainability UI.
+
+
+Pipeline:
+
+Step 1: Download video from YouTube (utils/download_YT_video.py).
+
+Step 2: Extract audio, transcribe with Whisper, chunk text, extract keyframes, match frames to text (utils/data_extraction.py).
+
+Step 3: Text embedding with Sentence Transformers (models/text_embedder.py).
+
+Step 4: Image embedding with CLIP (models/image_embedder.py).
+
+Step 5: Retrieval system:
+
+    - Semantic search (FAISS, PostgreSQL pgvector with IVFFLAT and HNSW).
+
+    - Lexical search (TF-IDF and BM25).
+
+    - ptional: Combine text and image retrieval.
+
+Step 6: Streamlit App:
+
+    - Text input for question.
+
+    - Display top matching video segments (with embedded video).
+
+    - If no good answer, show "No answer found."
+
+
+    App Design: 
+    --------------------------------------------------------
+|  📹 Video Player [selected frame/video segment]       |
+|                                                      |
+|  ✍️  Text Input (User Question)                       |
+|                                                      |
+|  🔍 Retrieval Mode:  [Semantic | Lexical]  (Dropdown) |
+|  📑 Top-k Results:   [1-10] (Slider)                  |
+|                                                      |
+|  💬 Answers (Text + Frame Snapshots)                 |
+|                                                      |
+--------------------------------------------------------
+Core flow:
+
+    User types a question.
+
+    Chooses semantic or lexical retrieval.
+
+    App shows best matching text chunks and frames.
+
+    Clickable thumbnails to jump to video points.

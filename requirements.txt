@@ -1,17 +1,17 @@
-streamlit  (downloaded)
-openai-whisper (downloaded)
-transformers (downloaded)
-sentence-transformers (downloaded)
-torch (downloaded)
-faiss-cpu
+streamlit  
+openai-whisper
+transformers 
+sentence-transformers 
+torch 
+faiss-cpu 
 opencv-python
-moviepy
-yt-dlp (downloaded)
-pillow (downloaded)
-scikit-learn
-rank-bm25
+yt-dlp 
+pillow
+scikit-learn 
+rank-bm25 
 pgvector
-psycopg2-binary
-sqlalchemy
-ffmpeg-python (downloaded)
-tf-keras (downloaded)
+psycopg2-binary 
+sqlalchemy 
+ffmpeg-python
+tf-keras 
+psycopg2 
