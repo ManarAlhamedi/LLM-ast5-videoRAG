@@ -1,0 +1,6 @@
+retriever,accuracy,rejection_quality,avg_latency_sec
+bm25,0.3,0.0,0.09100882212320964
+tfidf,0.1,0.0,0.04572113355000814
+faiss,0.6,0.0,0.012431891759236653
+pgvector_ivfflat,0.6,0.0,0.01820793151855469
+pgvector_hnsw,0.6,0.0,0.01818089485168457

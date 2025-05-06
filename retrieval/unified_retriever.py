@@ -4,8 +4,6 @@ from retrieval.semantic_retrieval import FaissRetriever, PgvectorRetriever
 from sentence_transformers import SentenceTransformer
 import torch
 import pickle
-from PIL import Image
-from torchvision import transforms
 from transformers import CLIPProcessor, CLIPModel
 
 # ------------------------

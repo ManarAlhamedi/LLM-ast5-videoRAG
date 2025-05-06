@@ -1,5 +1,4 @@
 import json
-import pickle
 from pathlib import Path
 from sklearn.feature_extraction.text import TfidfVectorizer
 from rank_bm25 import BM25Okapi

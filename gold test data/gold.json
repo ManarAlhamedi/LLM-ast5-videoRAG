@@ -1,0 +1,79 @@
+[
+    {
+      "question": "Who are the collaborators mentioned in this research",
+      "answer": 104
+    },
+
+    {
+      "question": "What is the 15-puzzle game and why is it relevant to combinatorial reconfiguration?",
+      "answer": 194 
+    },
+
+    {
+      "question": "What is a reconfiguration graph in the context of one-player games?",
+      "answer": 360 
+    },
+
+    {
+      "question": "What does 'God’s number' refer to in this context?",
+      "answer": 420
+    },
+
+    {
+      "question": "What are token jumping and token sliding problems?",
+      "answer": 780
+    },
+
+    {
+      "question": "what are the open problems mentioned in the lecture?",
+      "answer": 2520
+    },
+
+    {
+      "question": "what are the open questions or open problems that couldn't be answered?",
+      "answer": 1530
+    },
+
+    {
+      "question": "I want the explanation of the hardness of free graphs.",
+      "answer": 1880
+    },
+
+    {
+      "question": "How do we prove the W1 hardness on C4 free graphs? ",
+      "answer": 2040
+    },
+
+    {
+      "question": "What are the questions that we can ask on the reconfiguration graph? ",
+      "answer": 378
+    },
+
+
+    {
+        "question":"What did the speaker say about climate change?",
+        "answer": null
+    }, 
+
+    {
+      "question":"What is the practical application of token jumping in robotics?",
+      "answer": null
+    }, 
+
+    {
+      "question":"How does the speaker compare token sliding to the Rubik’s Cube in terms of complexity?",
+      "answer": null
+    }, 
+
+    {
+      "question": "Are there any known polynomial-time algorithms for solving the 15-puzzle in all cases?", 
+      "answer": null
+    },
+
+    {
+      "question" : "Does the talk include a live demonstration of solving a token reconfiguration problem?",
+      "answer": null
+
+    }
+
+  ]

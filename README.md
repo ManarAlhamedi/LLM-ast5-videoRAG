@@ -1,9 +1,26 @@
 # LLM-ast5-videoRAG
 This is a repository containing all the deliverables for assignment 5 of CMPS396A: LLM and RAGs course. It implemnets a multimodal RAG system around a video, combining speech-to-text transcription, keyframe extraction, text and image embeddings, semantic + lexical search, and then wrap it all inside a Streamlit chat-like interface that either plays relevant video segments or says no answer found.
 
-# Rnnning the App
+# Directory Structure:
+RAG-Video-QA/
+├── interface/            # Streamlit app
+├── data/                 # Video, Chunks, Frames and Mappings of Text to Frames
+├── embeddings/           # Text & image embeddings
+├── retrieval/            # Semantic and lexical search
+├── models/               # Whisper, CLIP, embedding models
+├── utils/                # Helper functions for video download and data extractions
+├── gold test data/       # Test data in json, Evaluation of the different retreival methods
+└── requirements.txt      # Dependencies
+
+
+# Running the App
 To run the app, open the terminal from the root directory, 
 and write the command: "streamlit run interface/app.py"
+
+To run the "gold test data/evaluate.py", first run the streamlit app, then run the evaluate.py
+
+# Installing all the required libraries:
+Command (Windows): pip install -r requirements.txt
 
 # Tech Stack:
 Programming Language: Python
@@ -20,7 +37,7 @@ Frameworks/Libraries:
 
 - FAISS, pgvector (semantic search)
 
-- Scikit-learn or Rank-BM25 (TF-IDF, BM25)
+- Rank-BM25 (TF-IDF, BM25)
 
 - ffmpeg-python (for frame extraction)
 
@@ -31,16 +48,6 @@ Frameworks/Libraries:
 - PostgreSQL: https://www.postgresql.org/download/windows/
 
 - pgvector extension for PostgreSQL https://github.com/pgvector/pgvector/
-
-# Directory Structure:
-RAG-Video-QA/
-├── interface/                  # Streamlit app
-├── data/                 # Video, Chunks, Frames and Mappings of Text to Frames
-├── embeddings/           # Text & image embeddings
-├── retrieval/            # Semantic and lexical search
-├── models/               # Whisper, CLIP, embedding models
-├── utils/                # Helper functions for video download and data extractions
-└── requirements.txt      # Dependencies
 
 
 (1) Text Embedding
@@ -62,7 +69,7 @@ Model: openai/clip-vit-base-patch32
 ✅ Many libraries already support it easily (like CLIP from Hugging Face or OpenAI’s repo).
 
 
-🛠 Project Mandatory Components
+🛠 Assignment Mandatory Components
 Speech-to-Text: Use Whisper.
 
 Text Embeddings: Open-source MTEB model.
@@ -94,28 +101,42 @@ Step 4: Image embedding with CLIP (models/image_embedder.py).
 
 Step 5: Retrieval system:
 
-    - Semantic search (FAISS, PostgreSQL pgvector with IVFFLAT and HNSW).
+    - Semantic search (FAISS, PostgreSQL pgvector with IVFFLAT and HNSW). (retreival/semantic_retrieval.py)
 
-    - Lexical search (TF-IDF and BM25).
+    - Lexical search (TF-IDF and BM25). (retreival/lexical_retrieval.py)
+    
+    - Unified Retrieval (retrieval/unified_retriever.py)
 
-    - optional: Combine text and image retrieval.
+    - optional: Combine text and image retrieval. (retrieval/unified_retriever.py)
 
-Step 6: Streamlit App:
+Step 6: Streamlit App: (interface/app.py)
 
     - Text input for question.
+
+    - Setting sidebar to select between the different 
 
     - Display top matching video segments (with embedded video).
 
     - If no good answer, show "No answer found."
 
+Step 7: Evaluation: 
+    - Prepare Gold Test Data (gold test data/data.json)
+
+    - Evaluate and Compare the Different Retrieval Methods (gold test data/evaluate.py)
 
 
 # For postgres connection:
+
+Make sure that you setup PosteGres, and store the url in a .env file in the following format:
+    DATABASE_URL=postgresql://username:password@localhost:port_number/database_name
+
 On Command Prompt (Windows):
-If you have psql installed, run this in your system terminal:
+If you have psql installed, run this in your system terminal, to connect to the database:
     psql -d <database_name> -U <username> -p <port_number>
+
+Make sure to install pgvector extension for PostgreSQL following the instructions here:
+https://github.com/pgvector/pgvector/
+
 To enable the vector extension for pgvector retrieval method, run this inside your psql session:
     CREATE EXTENSION vector;
     SELECT * FROM pg_extension WHERE extname = 'vector';
-
-
