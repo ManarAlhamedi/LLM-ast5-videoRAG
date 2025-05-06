@@ -40,8 +40,10 @@ class FaissRetriever:
 
         print(f"[INFO] FAISS index built with {self.index.ntotal} vectors.")
 
-    def search(self, query_embedding, top_k=5):
+    def search(self, query_embedding, top_k=5, threshold=1.5):
         distances, indices = self.index.search(query_embedding, top_k)
+        if distances[0][0] > threshold: # Most similar is still far
+            return [("No answer found with sufficient similarity.", distances[0][0])]
         results = [(self.texts[idx], distances[0][i]) for i, idx in enumerate(indices[0])]
         return results
 
@@ -126,18 +128,25 @@ class PgvectorRetriever:
             return result is not None
 
 
-
-    def search(self, query_embedding, top_k=5, method="ivfflat"):
-        with self.engine.connect() as conn:
-            if method.lower() == "ivfflat":
-                distance_expr = self.table.c.embedding.l2_distance(query_embedding).label("score")
-                stmt = select(self.table.c.text, distance_expr).order_by(distance_expr).limit(top_k)
-            elif method.lower() == "hnsw":
-                # Negative of max_inner_product to return high similarity (DESC order)
-                similarity_expr = (self.table.c.embedding.max_inner_product(query_embedding) * -1).label("score")
-                stmt = select(self.table.c.text, similarity_expr).order_by(desc("score")).limit(top_k)
+    def search(self, query_embedding, top_k=5, method="ivfflat", threshold=None):
+        method = method.lower()
+        
+        # Set default thresholds per method
+        if threshold is None:
+            if method == "ivfflat":
+                threshold = 1.0
+            elif method == "hnsw":
+                threshold = 0.4
             else:
                 raise ValueError("Unknown method: choose 'ivfflat' or 'hnsw'.")
+
+        with self.engine.connect() as conn:
+            if method == "ivfflat":
+                distance_expr = self.table.c.embedding.l2_distance(query_embedding).label("score")
+                stmt = select(self.table.c.text, distance_expr).order_by(distance_expr).limit(top_k)
+            elif method == "hnsw":
+                similarity_expr = (self.table.c.embedding.max_inner_product(query_embedding) * -1).label("score")
+                stmt = select(self.table.c.text, similarity_expr).order_by(desc("score")).limit(top_k)
 
             results = conn.execute(stmt).mappings().fetchall()
 
@@ -145,6 +154,9 @@ class PgvectorRetriever:
             for row in results:
                 print(f"[DEBUG] Result text: {row['text']}, Score: {row['score']}")
 
+        # Apply threshold logic
+        if not results or results[0]['score'] > threshold:
+            return [("No answer found with sufficient confidence.", results[0]['score'] if results else None)]
 
         return [(row['text'], row['score']) for row in results]
 

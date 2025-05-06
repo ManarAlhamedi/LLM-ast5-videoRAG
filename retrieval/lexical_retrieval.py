@@ -34,10 +34,12 @@ class TfidfRetriever:
         self.tfidf_matrix = self.vectorizer.fit_transform(self.texts)
         print(f"[INFO] TF-IDF matrix shape: {self.tfidf_matrix.shape}")
 
-    def search(self, query, top_k=5):
+    def search(self, query, top_k=5, threshold=0.1):
         query_vec = self.vectorizer.transform([query])
         scores = (self.tfidf_matrix @ query_vec.T).toarray().ravel()
         top_indices = scores.argsort()[::-1][:top_k]
+        if scores[top_indices[0]] < threshold:
+            return [("No answer found with sufficient confidence.", 0.0)]
         return [(self.texts[idx], scores[idx]) for idx in top_indices]
 
 # ------------------------
@@ -65,9 +67,11 @@ class BM25Retriever:
         self.bm25 = BM25Okapi(self.corpus)
         print(f"[INFO] BM25 corpus size: {len(self.corpus)}")
 
-    def search(self, query, top_k=5):
+    def search(self, query, top_k=5, threshold=0.1):
         tokenized_query = word_tokenize(query.lower())
         scores = self.bm25.get_scores(tokenized_query)
         top_indices = sorted(range(len(scores)), key=lambda i: scores[i], reverse=True)[:top_k]
+        if scores[top_indices[0]] < threshold:
+            return [("No answer found with sufficient confidence.", 0.0)]
         return [(self.texts[idx], scores[idx]) for idx in top_indices]
 

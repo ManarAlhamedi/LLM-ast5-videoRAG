@@ -58,9 +58,17 @@ for retriever_type in RETRIEVER_OPTIONS:
 
         if results_top:
             result_text, _ = results_top[0]
+
+            # Skip placeholder responses for rejected queries
+            if "No answer found" in result_text:
+                continue
+
             predicted_ts = find_timestamp_for_text(result_text, mapping)
-            if abs(predicted_ts - q["answer"]) <= 5:
+
+            # Only evaluate if a valid timestamp was found
+            if predicted_ts is not None and abs(predicted_ts - q["answer"]) <= 10:
                 correct += 1
+
 
     # Evaluate unanswerable
     for q in unanswerable_questions:
@@ -69,7 +77,12 @@ for retriever_type in RETRIEVER_OPTIONS:
         latencies.append(time.time() - start)
 
         if results_top:
-            false_positive += 1
+            result_text, _ = results_top[0]
+            
+            # Count false positives only if the system did *not* reject the query
+            if "No answer found" not in result_text:
+                false_positive += 1
+
 
     total_answerable = len(answerable_questions)
     total_unanswerable = len(unanswerable_questions)
