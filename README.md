@@ -2,7 +2,7 @@
 This is a repository containing all the deliverables for assignment 5 of CMPS396A: LLM and RAGs course. It implemnets a multimodal RAG system around a video, combining speech-to-text transcription, keyframe extraction, text and image embeddings, semantic + lexical search, and then wrap it all inside a Streamlit chat-like interface that either plays relevant video segments or says no answer found.
 
 # Directory Structure:
-RAG-Video-QA/
+'''RAG-Video-QA/
 ├── interface/            # Streamlit app
 ├── data/                 # Video, Chunks, Frames and Mappings of Text to Frames
 ├── embeddings/           # Text & image embeddings
@@ -10,7 +10,7 @@ RAG-Video-QA/
 ├── models/               # Whisper, CLIP, embedding models
 ├── utils/                # Helper functions for video download and data extractions
 ├── gold test data/       # Test data in json, Evaluation of the different retreival methods
-└── requirements.txt      # Dependencies
+└── requirements.txt      # Dependencies'''
 
 
 # Running the App
