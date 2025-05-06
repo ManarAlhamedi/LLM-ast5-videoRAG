@@ -71,7 +71,8 @@ Model: openai/clip-vit-base-patch32
 ✅ Many libraries already support it easily (like CLIP from Hugging Face or OpenAI’s repo).
 
 
-🛠 Assignment Mandatory Components
+# 🛠 Assignment Mandatory Components
+```
 Speech-to-Text: Use Whisper.
 
 Text Embeddings: Open-source MTEB model.
@@ -89,7 +90,7 @@ Evaluation: Accuracy, rejection quality, latency, graphs/tables.
 Video Demo: Clear 10-min walkthrough.
 
 (Optional Bonus): Score fusion, fine-tuning, explainability UI.
-
+```
 
 Pipeline:
 
